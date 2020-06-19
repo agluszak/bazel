@@ -54,6 +54,5 @@ def cc_import_test_suite(name):
         tags = [
             "manual",
             "nobuilder",
-        ],
-    )
+        ]
     )

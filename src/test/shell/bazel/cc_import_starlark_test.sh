@@ -24,7 +24,6 @@ source "${CURRENT_DIR}/../integration_test_setup.sh" \
   || { echo "integration_test_setup.sh not found!" >&2; exit 1; }
 
 function test_all_starlark_written_tests() {
-
   TEST_FILES_DIR="$RUNFILES_DIR/io_bazel"
   cp --parents "${TEST_FILES_DIR}/tools/build_defs/cc/cc_import.bzl" .
   cp -r --parents "${TEST_FILES_DIR}/tools/build_defs/cc/tests" .
