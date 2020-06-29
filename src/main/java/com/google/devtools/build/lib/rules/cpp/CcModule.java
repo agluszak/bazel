@@ -407,6 +407,7 @@ public abstract class CcModule
       Object picStaticLibraryObject,
       Object dynamicLibraryObject,
       Object interfaceLibraryObject,
+      Object objectFileObject,
       boolean alwayslink,
       String dynamicLibraryPath,
       String interfaceLibraryPath,
@@ -422,6 +423,7 @@ public abstract class CcModule
     Artifact picStaticLibrary = nullIfNone(picStaticLibraryObject, Artifact.class);
     Artifact dynamicLibrary = nullIfNone(dynamicLibraryObject, Artifact.class);
     Artifact interfaceLibrary = nullIfNone(interfaceLibraryObject, Artifact.class);
+    Artifact objectFile = nullIfNone(objectFileObject, Artifact.class);
 
     StringBuilder extensionErrorsBuilder = new StringBuilder();
     String extensionErrorMessage = "does not have any of the allowed extensions";
@@ -496,6 +498,17 @@ public abstract class CcModule
       }
       notNullArtifactForIdentifier = interfaceLibrary;
     }
+    if (objectFile != null) {
+      String filename = objectFile.getFilename();
+      if (!Link.OBJECT_FILETYPES.matches(filename)) {
+        extensionErrorsBuilder.append(
+                String.format(
+                        "'%s' %s %s",
+                        filename, extensionErrorMessage, Link.OBJECT_FILETYPES));
+        extensionErrorsBuilder.append(LINE_SEPARATOR.value());
+      }
+      notNullArtifactForIdentifier = objectFile;
+    }
     if (notNullArtifactForIdentifier == null) {
       throw Starlark.errorf("Must pass at least one artifact");
     }
@@ -567,7 +580,8 @@ public abstract class CcModule
     if (staticLibrary == null
         && picStaticLibrary == null
         && dynamicLibrary == null
-        && interfaceLibrary == null) {
+        && interfaceLibrary == null
+        && objectFile == null) {
       throw Starlark.errorf(
           "Must pass at least one of the following parameters: static_library, pic_static_library, "
               + "dynamic_library and interface_library.");
@@ -581,6 +595,7 @@ public abstract class CcModule
         .setInterfaceLibrary(interfaceLibrary)
         .setResolvedSymlinkInterfaceLibrary(resolvedSymlinkInterfaceLibrary)
         .setAlwayslink(alwayslink)
+        .setObjectFiles(objectFile == null ? ImmutableList.of() : ImmutableList.of(objectFile))
         .build();
   }
 

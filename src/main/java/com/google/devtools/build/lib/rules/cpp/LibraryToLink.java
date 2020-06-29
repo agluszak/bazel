@@ -379,7 +379,8 @@ public abstract class LibraryToLink implements LibraryToLinkApi<Artifact> {
           (getObjectFiles() == null
                   && getLtoCompilationContext() == null
                   && getSharedNonLtoBackends() == null)
-              || getStaticLibrary() != null);
+              || getStaticLibrary() != null
+              || getObjectFiles() != null);
       Preconditions.checkState(
           (getPicObjectFiles() == null
                   && getPicLtoCompilationContext() == null
@@ -394,7 +395,8 @@ public abstract class LibraryToLink implements LibraryToLinkApi<Artifact> {
           getStaticLibrary() != null
               || getPicStaticLibrary() != null
               || getDynamicLibrary() != null
-              || getInterfaceLibrary() != null);
+              || getInterfaceLibrary() != null
+              || getObjectFiles() != null);
 
       return autoBuild();
     }

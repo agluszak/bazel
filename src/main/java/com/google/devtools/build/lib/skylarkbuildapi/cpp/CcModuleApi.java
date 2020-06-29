@@ -588,6 +588,14 @@ public interface CcModuleApi<
             defaultValue = "None",
             type = FileApi.class),
         @Param(
+            name = "object_file",
+            doc = "<code>File</code> of interface library to be linked.",
+            positional = false,
+            named = true,
+            noneable = true,
+            defaultValue = "None",
+            type = FileApi.class),
+        @Param(
             name = "alwayslink",
             doc = "Whether to link the static library/objects in the --whole_archive block.",
             positional = false,
@@ -620,6 +628,7 @@ public interface CcModuleApi<
       Object picStaticLibrary,
       Object dynamicLibrary,
       Object interfaceLibrary,
+      Object objectFile,
       boolean alwayslink,
       String dynamicLibraryPath,
       String interfaceLibraryPath,

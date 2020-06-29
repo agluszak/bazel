@@ -111,6 +111,7 @@ def _cc_import_impl(ctx):
         pic_static_library = pic_static_library,
         dynamic_library = ctx.file.shared_library,
         interface_library = ctx.file.interface_library,
+        object_file = ctx.file.object_file,
         alwayslink = ctx.attr.alwayslink,
     )
 
@@ -141,6 +142,7 @@ cc_import = rule(
         "interface_library": attr.label(
             allow_single_file = [".ifso", ".tbd", ".lib", ".so", ".dylib"],
         ),
+        "object_file": attr.label(allow_single_file = True),
         "system_provided": attr.bool(default = False),
         "alwayslink": attr.bool(default = False),
         "linkopts": attr.string_list(),

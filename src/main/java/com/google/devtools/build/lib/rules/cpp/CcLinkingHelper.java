@@ -899,7 +899,15 @@ public final class CcLinkingHelper {
         ImmutableList.builder();
     for (LibraryToLink libraryToLink : librariesToLink.toList()) {
       LinkerInputs.LibraryToLink staticLibraryToLink =
-          libraryToLink.getStaticLibrary() == null ? null : libraryToLink.getStaticLibraryToLink();
+          libraryToLink.getStaticLibrary() == null ? (libraryToLink.getObjectFiles() == null ? null : LinkerInputs.newInputLibrary(
+                  libraryToLink.getObjectFiles().get(0),
+                  ArtifactCategory.OBJECT_FILE,
+                  libraryToLink.getLibraryIdentifier(),
+                  libraryToLink.getObjectFiles(),
+                  libraryToLink.getLtoCompilationContext(),
+                  libraryToLink.getSharedNonLtoBackends(),
+                  libraryToLink.getMustKeepDebug(),
+                  libraryToLink.getDisableWholeArchive())) : libraryToLink.getStaticLibraryToLink();
       LinkerInputs.LibraryToLink picStaticLibraryToLink =
           libraryToLink.getPicStaticLibrary() == null
               ? null

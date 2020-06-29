@@ -1353,10 +1353,10 @@ public class CppLinkActionBuilder {
 
   private void checkLibrary(LinkerInputs.LibraryToLink input) {
     String name = input.getArtifact().getFilename();
-    Preconditions.checkArgument(
-        Link.ARCHIVE_LIBRARY_FILETYPES.matches(name) || Link.SHARED_LIBRARY_FILETYPES.matches(name),
-        "'%s' is not a library file",
-        input);
+//    Preconditions.checkArgument(
+//        Link.ARCHIVE_LIBRARY_FILETYPES.matches(name) || Link.SHARED_LIBRARY_FILETYPES.matches(name),
+//        "'%s' is not a library file",
+//        input);
   }
 
   /**

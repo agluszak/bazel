@@ -358,6 +358,10 @@ public abstract class LinkerInputs {
           Preconditions.checkState(Link.SHARED_LIBRARY_FILETYPES.matches(basename));
           break;
 
+        case OBJECT_FILE:
+          Preconditions.checkState(Link.OBJECT_FILETYPES.matches(basename));
+          break;
+
         default:
           throw new IllegalStateException();
       }
