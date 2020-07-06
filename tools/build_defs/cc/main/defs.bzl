@@ -4,7 +4,7 @@ def _my_transition_impl(settings, attr):
     _ignore = settings, attr
     print("transition")
 
-    return {"//command_line_option:copt": ["FLAG"]}
+    return {"//command_line_option:copt": ["-DFLAG"]}
 
 my_transition = transition(
     implementation = _my_transition_impl,
@@ -22,10 +22,12 @@ def _impl(ctx):
     compilation_context = cc_common.create_compilation_context(
     )
 
-    return [CcInfo(
-        compilation_context = compilation_context,
-        linking_context = linking_context,
-    )]
+    cc_infos = []
+    for dep in ctx.attr.deps:
+        cc_infos.append(dep[CcInfo])
+    merged_cc_info = cc_common.merge_cc_infos(cc_infos = cc_infos)
+
+    return merged_cc_info
 
 custom = rule(
     implementation = _impl,

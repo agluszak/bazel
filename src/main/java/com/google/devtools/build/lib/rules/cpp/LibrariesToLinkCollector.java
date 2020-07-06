@@ -236,20 +236,29 @@ public class LibrariesToLinkCollector {
       NestedSetBuilder<LinkerInput> expandedLinkerInputsBuilder) {
     boolean includeSolibDir = false;
     boolean includeToolchainLibrariesSolibDir = false;
+    HashMap<String, PathFragment> linkedLibrariesPaths = new HashMap<>();
+
     for (LinkerInput input : linkerInputs) {
       if (input.getArtifactCategory() == ArtifactCategory.DYNAMIC_LIBRARY
           || input.getArtifactCategory() == ArtifactCategory.INTERFACE_LIBRARY) {
         PathFragment libDir = input.getArtifact().getExecPath().getParentDirectory();
+        Preconditions.checkState(
+                input instanceof LinkerInputs.LibraryToLink,
+                "Linker input %s of type %s does not implement the LinkerInputs.LibraryToLink interface",
+                input,
+                input.getArtifactCategory());
+        LinkerInputs.LibraryToLink libraryToLink = (LinkerInputs.LibraryToLink) input;
+        String libraryIdentifier = libraryToLink.getLibraryIdentifier();
+        PathFragment previousLibDir = linkedLibrariesPaths.get(libraryIdentifier);
+        if (previousLibDir == null) {
+          linkedLibrariesPaths.put(libraryIdentifier, libDir);
+        } else if (!previousLibDir.equals(libDir)) {
+          // TODO ruleErrorConsumer.ruleError("You are trying to link the same library foo.so built in different configuration")
+        }
+
         // When COPY_DYNAMIC_LIBRARIES_TO_BINARY is enabled, dynamic libraries are not symlinked
         // under solibDir, so don't check it and don't include solibDir.
         if (!featureConfiguration.isEnabled(CppRuleClasses.COPY_DYNAMIC_LIBRARIES_TO_BINARY)) {
-          Preconditions.checkState(
-              libDir.startsWith(solibDir) || libDir.startsWith(toolchainLibrariesSolibDir),
-              "Artifact '%s' is not under directory expected '%s',"
-                  + " neither it is in directory for toolchain libraries '%'.",
-              input.getArtifact(),
-              solibDir,
-              toolchainLibrariesSolibDir);
           if (libDir.equals(solibDir)) {
             includeSolibDir = true;
           }
