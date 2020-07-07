@@ -1,4 +1,4 @@
-load(":cc_import_test.bzl", "cc_import_test_suite")
+load(":cc_import_tests.bzl", "cc_import_test_suite")
 
 licenses(["notice"])  # Apache 2.0
 

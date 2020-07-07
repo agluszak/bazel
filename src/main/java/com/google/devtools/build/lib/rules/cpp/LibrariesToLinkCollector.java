@@ -21,6 +21,7 @@ import com.google.common.collect.Iterables;
 import com.google.devtools.build.lib.actions.Artifact;
 import com.google.devtools.build.lib.collect.nestedset.NestedSet;
 import com.google.devtools.build.lib.collect.nestedset.NestedSetBuilder;
+import com.google.devtools.build.lib.packages.RuleErrorConsumer;
 import com.google.devtools.build.lib.rules.cpp.CcToolchainFeatures.FeatureConfiguration;
 import com.google.devtools.build.lib.rules.cpp.CcToolchainVariables.LibraryToLinkValue;
 import com.google.devtools.build.lib.rules.cpp.CcToolchainVariables.SequenceBuilder;
@@ -50,6 +51,7 @@ public class LibrariesToLinkCollector {
   private final String rpathRoot;
   private final boolean needToolchainLibrariesRpath;
   private final Map<Artifact, Artifact> ltoMap;
+  private final RuleErrorConsumer ruleErrorConsumer;
 
   public LibrariesToLinkCollector(
       boolean isNativeDeps,
@@ -66,7 +68,8 @@ public class LibrariesToLinkCollector {
       Artifact thinltoParamFile,
       boolean allowLtoIndexing,
       Iterable<LinkerInput> linkerInputs,
-      boolean needWholeArchive) {
+      boolean needWholeArchive,
+      RuleErrorConsumer ruleErrorConsumer) {
     this.isNativeDeps = isNativeDeps;
     this.cppConfiguration = cppConfiguration;
     this.ccToolchainProvider = toolchain;
@@ -80,6 +83,7 @@ public class LibrariesToLinkCollector {
     this.allowLtoIndexing = allowLtoIndexing;
     this.linkerInputs = linkerInputs;
     this.needWholeArchive = needWholeArchive;
+    this.ruleErrorConsumer = ruleErrorConsumer;
 
     needToolchainLibrariesRpath =
         toolchainLibrariesSolibDir != null
@@ -253,7 +257,9 @@ public class LibrariesToLinkCollector {
         if (previousLibDir == null) {
           linkedLibrariesPaths.put(libraryIdentifier, libDir);
         } else if (!previousLibDir.equals(libDir)) {
-          // TODO ruleErrorConsumer.ruleError("You are trying to link the same library foo.so built in different configuration")
+          ruleErrorConsumer.ruleError(String.format(
+                  "You are trying to link the same dynamic library %s built in a different configuration",
+                  libraryIdentifier));
         }
 
         // When COPY_DYNAMIC_LIBRARIES_TO_BINARY is enabled, dynamic libraries are not symlinked

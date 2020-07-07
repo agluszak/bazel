@@ -853,7 +853,8 @@ public class CppLinkActionBuilder {
             thinltoParamFile,
             allowLtoIndexing,
             nonExpandedLinkerInputs,
-            needWholeArchive);
+            needWholeArchive,
+            ruleErrorConsumer);
     CollectedLibrariesToLink collectedLibrariesToLink =
         librariesToLinkCollector.collectLibrariesToLink();
 

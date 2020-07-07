@@ -26,3 +26,30 @@ apply_custom_transition = rule(
         "deps": attr.label_list(cfg = my_transition),
     },
 )
+
+deps = [
+    "cc_import_transition_test_dep1",
+    "cc_import_transition_test_dep2",
+]
+
+def setup(name, test, deps):
+    cc_binary(
+        name = "cc_import_" + name + "_test_binary",
+        srcs = ["main.cc"],
+        deps = deps,
+    )
+
+    apply_custom_transition(
+        name = "cc_import_" + name + "_test_dep1",
+        deps = [":cc_import_" + name + "_test_dep2"],
+    )
+
+    cc_import(
+        name = "cc_import_" + name + "_test_dep2",
+        shared_library = "test.so",
+        hdrs = ["test.h"],
+    )
+
+    test(
+        name = "cc_import_" + name + "_test",
+    )

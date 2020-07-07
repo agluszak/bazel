@@ -5,7 +5,7 @@ cc_binary(
     name = "main",
     srcs = ["main.cc"],
     features = ["-supports_start_end_lib"],
-    #    linkstatic = 0,
+    linkstatic = 0,
     deps = [
         "dep1",
         "dep2",
